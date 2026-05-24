@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ML Roadmap — 25 Days</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060f;
+  --glass:rgba(255,255,255,0.04);
+  --glass-border:rgba(255,255,255,0.08);
+  --glass-hover:rgba(255,255,255,0.07);
+  --text:#f0f0f5;
+  --muted:#7878a0;
+  --yellow:#e8ff47;
+  --blue:#47c8ff;
+  --red:#ff6b6b;
+  --purple:#b47fff;
+  --orange:#ff9f47;
+  --green:#4fffb0;
+  --fd:'Syne',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fd);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cursor{position:fixed;width:20px;height:20px;border-radius:50%;background:rgba(232,255,71,0.15);border:1px solid rgba(232,255,71,0.4);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s,background 0.2s;backdrop-filter:blur(4px)}
+#cursor-glow{position:fixed;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(232,255,71,0.04) 0%,transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.3s ease}
+body:has(a:hover) #cursor,body:has(button:hover) #cursor{width:36px;height:36px;background:rgba(232,255,71,0.25)}
+
+/* CANVAS */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(6,6,15,0.6);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);transition:all 0.3s}
+.nav-brand{font-weight:800;font-size:1rem;color:var(--yellow);letter-spacing:-0.02em}
+.nav-links{display:flex;gap:0.3rem;flex-wrap:wrap}
+.nav-link{font-family:var(--fm);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 0.7rem;border-radius:3px;color:var(--muted);text-decoration:none;transition:all 0.2s;border:1px solid transparent;cursor:pointer}
+.nav-link:hover,.nav-link.active{color:var(--yellow);border-color:rgba(232,255,71,0.2);background:rgba(232,255,71,0.05)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:6rem 2rem 4rem;max-width:1300px;margin:0 auto;gap:3rem;z-index:1}
+.hero-content{flex:1;animation:fadeUp 0.8s ease both}
+.badge{display:inline-block;background:rgba(232,255,71,0.08);border:1px solid rgba(232,255,71,0.25);color:var(--yellow);font-family:var(--fm);font-size:0.7rem;letter-spacing:0.15em;padding:0.3rem 0.8rem;border-radius:2px;margin-bottom:1.5rem;text-transform:uppercase}
+h1{font-size:clamp(3rem,7vw,6.5rem);font-weight:800;line-height:0.93;letter-spacing:-0.04em;margin-bottom:1.5rem}
+.accent{color:var(--yellow)}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:400px;line-height:1.7;margin-bottom:2rem;font-weight:400}
+.hero-stats{display:flex;align-items:center;gap:1.5rem;margin-bottom:2.5rem}
+.stat{display:flex;flex-direction:column}
+.stat-num{font-size:2.2rem;font-weight:800;line-height:1;color:var(--text)}
+.stat-label{font-family:var(--fm);font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.sdiv{width:1px;height:36px;background:var(--glass-border)}
+.cta-btn{display:inline-block;background:var(--yellow);color:#06060f;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;padding:0.8rem 1.8rem;border-radius:3px;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;border:none}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,255,71,0.3)}
+
+/* FLOATING TAGS */
+.hero-visual{position:relative;flex:0 0 300px;height:360px;z-index:2;animation:fadeUp 0.8s 0.2s ease both}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.o1{width:260px;height:260px;background:rgba(232,255,71,0.1);top:10%;left:0;animation:floatOrb 6s ease-in-out infinite}
+.o2{width:180px;height:180px;background:rgba(71,200,255,0.08);bottom:0;right:0;animation:floatOrb 8s 1s ease-in-out infinite}
+.o3{width:130px;height:130px;background:rgba(180,127,255,0.08);top:40%;left:40%;animation:floatOrb 7s 2s ease-in-out infinite}
+.floating-tags{position:relative;width:100%;height:100%}
+.ftag{position:absolute;font-family:var(--fm);font-size:0.68rem;background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);padding:0.3rem 0.65rem;border-radius:3px;color:var(--muted);animation:floatTag 4s var(--d) ease-in-out infinite;white-space:nowrap;transition:color 0.3s,border-color 0.3s}
+.ftag:hover{color:var(--yellow);border-color:rgba(232,255,71,0.3)}
+
+/* PROGRESS TRACKER TOGGLE */
+.tracker-toggle{position:fixed;right:1.5rem;bottom:2rem;z-index:200;background:rgba(232,255,71,0.9);color:#06060f;border:none;border-radius:50px;padding:0.65rem 1.2rem;font-family:var(--fd);font-weight:700;font-size:0.8rem;cursor:pointer;box-shadow:0 4px 20px rgba(232,255,71,0.3);transition:all 0.2s;display:flex;align-items:center;gap:0.5rem}
+.tracker-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,255,71,0.4)}
+.tracker-badge{background:#06060f;color:var(--yellow);border-radius:50px;padding:0.1rem 0.5rem;font-size:0.7rem;font-family:var(--fm)}
+
+/* TRACKER PANEL */
+.tracker-panel{position:fixed;right:-380px;top:0;bottom:0;width:360px;background:rgba(10,10,20,0.85);backdrop-filter:blur(30px);border-left:1px solid var(--glass-border);z-index:300;transition:right 0.4s cubic-bezier(0.16,1,0.3,1);overflow-y:auto;padding:1.5rem}
+.tracker-panel.open{right:0}
+.tracker-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.tracker-head h2{font-size:1.1rem;font-weight:800}
+.close-btn{background:var(--glass);border:1px solid var(--glass-border);color:var(--text);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.close-btn:hover{background:rgba(255,107,107,0.15);border-color:var(--red);color:var(--red)}
+.progress-bar-wrap{background:rgba(255,255,255,0.05);border-radius:50px;height:8px;margin-bottom:0.5rem;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:50px;transition:width 0.5s cubic-bezier(0.16,1,0.3,1);width:0%}
+.progress-text{font-family:var(--fm);font-size:0.68rem;color:var(--muted);margin-bottom:1.5rem}
+.tracker-phase-label{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin:1rem 0 0.5rem;padding-bottom:0.4rem;border-bottom:1px solid var(--glass-border)}
+.day-check{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.6rem;border-radius:4px;cursor:pointer;transition:background 0.2s;margin-bottom:0.2rem}
+.day-check:hover{background:var(--glass)}
+.day-check input{display:none}
+.check-box{width:18px;height:18px;border-radius:3px;border:1px solid var(--glass-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:0.7rem}
+.day-check.done .check-box{background:var(--yellow);border-color:var(--yellow);color:#06060f}
+.check-label{font-size:0.8rem;color:var(--muted);transition:color 0.2s;line-height:1.3}
+.day-check.done .check-label{color:var(--text);text-decoration:line-through;opacity:0.6}
+
+/* PHASES BAR */
+.phases-bar{background:rgba(10,10,20,0.6);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);padding:2.5rem 0;position:relative;z-index:1}
+.phases-bar .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:2rem;text-align:center}
+.phases-strip{display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;justify-content:center}
+.phase-chip{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid var(--c,rgba(255,255,255,0.1));border-radius:6px;padding:0.9rem 1.1rem;display:flex;flex-direction:column;align-items:center;gap:0.2rem;min-width:130px;text-align:center;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;cursor:pointer}
+.phase-chip:hover,.phase-chip.active{transform:translateY(-3px);background:rgba(255,255,255,0.06);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.pnum{font-family:var(--fm);font-size:0.6rem;color:var(--c);letter-spacing:0.1em}
+.pname{font-size:0.82rem;font-weight:700}
+.pdays{font-family:var(--fm);font-size:0.6rem;color:var(--muted)}
+.parr{font-size:1rem;color:var(--muted)}
+
+/* ROADMAP */
+.roadmap{padding:5rem 0;position:relative;z-index:1}
+.roadmap .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.phase-block{margin-bottom:5rem;transition:opacity 0.3s,transform 0.3s}
+.phase-block.hidden{display:none}
+.phase-hdr{display:flex;align-items:baseline;gap:1.2rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06);position:relative}
+.phase-hdr::after{content:'';position:absolute;bottom:-1px;left:0;width:50px;height:2px;background:var(--c);box-shadow:0 0 10px var(--c)}
+.plabel{font-family:var(--fm);font-size:0.65rem;color:var(--c);letter-spacing:0.15em;text-transform:uppercase;flex-shrink:0}
+.ptitle{font-size:1.5rem;font-weight:800;letter-spacing:-0.03em}
+.prange{font-family:var(--fm);font-size:0.7rem;color:var(--muted);margin-left:auto}
+
+/* DAY CARDS */
+.days-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.day-card{background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:10px;padding:1.3rem;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;position:relative;overflow:hidden;cursor:pointer;transform-style:preserve-3d}
+.day-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent,rgba(255,255,255,0.1));border-radius:3px 0 0 3px}
+.day-card:hover{box-shadow:0 12px 40px rgba(0,0,0,0.4);border-color:rgba(255,255,255,0.12)}
+.day-card.reveal{animation:revealCard 0.5s ease both}
+.day-card.theory{--accent:rgba(71,200,255,0.7)}
+.day-card.practical{--accent:rgba(232,255,71,0.7)}
+.day-card.project{--accent:rgba(255,107,107,0.8);background:rgba(255,107,107,0.04);border-color:rgba(255,107,107,0.12)}
+.day-card.review{--accent:rgba(180,127,255,0.7)}
+.day-card.capstone-card{--accent:rgba(255,159,71,0.9);background:rgba(255,159,71,0.05);border-color:rgba(255,159,71,0.15)}
+.day-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.dnum{font-family:var(--fm);font-size:0.62rem;color:var(--muted);letter-spacing:0.08em}
+.dtype{font-family:var(--fm);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:2px}
+.dtype.t{background:rgba(71,200,255,0.1);color:var(--blue);border:1px solid rgba(71,200,255,0.2)}
+.dtype.p{background:rgba(232,255,71,0.08);color:var(--yellow);border:1px solid rgba(232,255,71,0.2)}
+.dtype.pr{background:rgba(255,107,107,0.1);color:var(--red);border:1px solid rgba(255,107,107,0.2)}
+.dtype.rv{background:rgba(180,127,255,0.1);color:var(--purple);border:1px solid rgba(180,127,255,0.2)}
+.day-card h3{font-size:0.9rem;font-weight:700;margin-bottom:0.7rem;line-height:1.3}
+.day-card ul{list-style:none;display:flex;flex-direction:column;gap:0.3rem}
+.day-card ul li{font-size:0.78rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.4}
+.day-card ul li::before{content:'›';position:absolute;left:0;color:var(--accent,var(--muted));font-size:0.9rem;line-height:1.2}
+.proj-desc{font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:0.7rem;padding:0.45rem 0.6rem;background:rgba(255,107,107,0.06);border-left:2px solid rgba(255,107,107,0.3);border-radius:0 3px 3px 0;line-height:1.4}
+
+/* EXPAND */
+.expand-btn{margin-top:0.8rem;font-family:var(--fm);font-size:0.62rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.05em;transition:color 0.2s;display:flex;align-items:center;gap:0.3rem}
+.expand-btn:hover{color:var(--yellow)}
+.expand-content{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1);margin-top:0}
+.expand-content.open{max-height:300px;margin-top:0.8rem}
+.expand-inner{padding-top:0.8rem;border-top:1px solid var(--glass-border)}
+.expand-inner p{font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:0.5rem;font-family:var(--fm);font-weight:300}
+.tools-row{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem}
+.tool-tag{font-family:var(--fm);font-size:0.62rem;padding:0.2rem 0.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:2px;color:var(--muted)}
+
+/* ALGO MODAL */
+#algo-modal{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+#algo-modal.open{opacity:1;pointer-events:all}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)}
+.modal-box{position:relative;background:rgba(15,15,28,0.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:2rem;max-width:420px;width:90%;transform:translateY(20px);transition:transform 0.3s}
+#algo-modal.open .modal-box{transform:translateY(0)}
+.modal-box h2{font-size:1.4rem;font-weight:800;margin-bottom:0.5rem;color:var(--yellow)}
+.modal-tag{font-family:var(--fm);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem}
+.modal-box p{font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;font-family:var(--fm);font-weight:300}
+.modal-use{font-size:0.8rem;color:var(--blue);font-family:var(--fm)}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--glass);border:1px solid var(--glass-border);color:var(--text);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-close:hover{background:rgba(255,107,107,0.15);color:var(--red)}
+
+/* ALGO LINKS */
+.algo-link{color:var(--blue);cursor:pointer;border-bottom:1px dashed rgba(71,200,255,0.3);transition:color 0.2s}
+.algo-link:hover{color:var(--yellow);border-bottom-color:rgba(232,255,71,0.4)}
+
+/* BENEFITS */
+.benefits{padding:5rem 0;position:relative;z-index:1;background:rgba(255,255,255,0.01)}
+.benefits .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
+.benefit-card{background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:10px;padding:1.7rem;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s}
+.benefit-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.1);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.bicon{font-size:1.8rem;margin-bottom:1rem}
+.benefit-card h3{font-size:0.95rem;font-weight:700;margin-bottom:0.5rem}
+.benefit-card p{font-size:0.8rem;color:var(--muted);line-height:1.7;font-family:var(--fm);font-weight:300}
+
+/* CERTS */
+.certs{padding:5rem 0;position:relative;z-index:1}
+.certs .container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.certs-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+.cert-item{background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:10px;padding:1.8rem 1.4rem;text-align:center;transition:transform 0.25s,box-shadow 0.25s;position:relative;overflow:hidden}
+.cert-item::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--yellow),var(--blue));opacity:0;transition:opacity 0.3s}
+.cert-item:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.25)}
+.cert-item:hover::after{opacity:1}
+.cicon{font-size:2.2rem;margin-bottom:1rem}
+.cert-item h3{font-size:0.9rem;font-weight:700;margin-bottom:0.5rem}
+.cert-item p{font-size:0.78rem;color:var(--muted);line-height:1.6;font-family:var(--fm);font-weight:300}
+
+/* FOOTER */
+footer{background:rgba(0,0,0,0.3);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);padding:2rem;position:relative;z-index:1}
+.foot-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.fbrand{font-size:1.1rem;font-weight:800;color:var(--yellow)}
+.ftag-line{font-family:var(--fm);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;animation:confettiFall 2.5s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatOrb{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes floatTag{0%,100%{transform:translateY(0);opacity:0.6}50%{transform:translateY(-7px);opacity:1}}
+@keyframes revealCard{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+  .hero{flex-direction:column;padding:5rem 1.5rem 3rem;gap:2rem}
+  .hero-visual{flex:none;width:100%;height:200px}
+  nav{padding:0.8rem 1rem}
+  .nav-links{display:none}
+  .phases-strip{gap:0.3rem}
+  .parr{display:none}
+  .tracker-panel{width:100%;right:-100%}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-glow"></div>
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><a class="nav-brand" href="index.html" style="text-decoration: none;">ML Roadmap</a></div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">My Profile</a>
+    <a class="nav-link" onclick="filterPhase('all')">All</a>
+    <a class="nav-link" onclick="filterPhase(1)">Phase 1</a>
+    <a class="nav-link" onclick="filterPhase(2)">Phase 2</a>
+    <a class="nav-link" onclick="filterPhase(3)">Phase 3</a>
+    <a class="nav-link" onclick="filterPhase(4)">Phase 4</a>
+    <a class="nav-link" onclick="filterPhase(5)">Phase 5</a>
+    <a class="nav-link" href="#benefits">Benefits</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="badge">25-Day Program</div>
+    <h1>Machine<br/><span class="accent">Learning</span><br/>Roadmap</h1>
+    <p class="hero-sub">From zero to ML practitioner — five phases, five real projects, one complete transformation.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-count="25">0</span><span class="stat-label">Days</span></div>
+      <div class="sdiv"></div>
+      <div class="stat"><span class="stat-num" data-count="5">0</span><span class="stat-label">Projects</span></div>
+      <div class="sdiv"></div>
+      <div class="stat"><span class="stat-num" data-count="10">0</span><span class="stat-label">Algorithms</span></div>
+    </div>
+    <button class="cta-btn" onclick="document.getElementById('roadmap').scrollIntoView({behavior:'smooth'})">Explore Roadmap ↓</button>
+  </div>
+  <div class="hero-visual">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="floating-tags">
+      <span class="ftag" style="--d:0s;left:0;top:0">NumPy</span>
+      <span class="ftag" style="--d:.4s;left:70px;top:35px">Pandas</span>
+      <span class="ftag" style="--d:.8s;left:-30px;top:80px">Sklearn</span>
+      <span class="ftag" style="--d:1.2s;left:90px;top:120px">SVM</span>
+      <span class="ftag" style="--d:.6s;left:-10px;top:160px">PCA</span>
+      <span class="ftag" style="--d:1s;left:55px;top:200px">K-Means</span>
+      <span class="ftag" style="--d:.2s;left:130px;top:65px">Kaggle</span>
+      <span class="ftag" style="--d:1.4s;left:-50px;top:240px">Random Forest</span>
+      <span class="ftag" style="--d:.9s;left:100px;top:270px">Matplotlib</span>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES BAR -->
+<div class="phases-bar">
+  <div class="container">
+    <h2 class="sec-title">Five Phases. Complete Mastery.</h2>
+    <div class="phases-strip">
+      <div class="phase-chip" style="--c:#e8ff47" onclick="filterPhase(1)"><span class="pnum">01</span><span class="pname">Foundations</span><span class="pdays">Days 1–4</span></div>
+      <span class="parr">→</span>
+      <div class="phase-chip" style="--c:#47c8ff" onclick="filterPhase(2)"><span class="pnum">02</span><span class="pname">Regression & Classification</span><span class="pdays">Days 5–10</span></div>
+      <span class="parr">→</span>
+      <div class="phase-chip" style="--c:#ff6b6b" onclick="filterPhase(3)"><span class="pnum">03</span><span class="pname">Trees & Ensembles</span><span class="pdays">Days 11–16</span></div>
+      <span class="parr">→</span>
+      <div class="phase-chip" style="--c:#b47fff" onclick="filterPhase(4)"><span class="pnum">04</span><span class="pname">Unsupervised & Advanced</span><span class="pdays">Days 17–21</span></div>
+      <span class="parr">→</span>
+      <div class="phase-chip" style="--c:#ff9f47" onclick="filterPhase(5)"><span class="pnum">05</span><span class="pname">Capstone</span><span class="pdays">Days 22–25</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<section class="roadmap" id="roadmap">
+  <div class="container">
+    <h2 class="sec-title">Day-by-Day Roadmap</h2>
+
+    <!-- P1 -->
+    <div class="phase-block" data-phase="1">
+      <div class="phase-hdr" style="--c:#e8ff47"><span class="plabel">Phase 01</span><span class="ptitle">Foundations</span><span class="prange">Days 1–4</span></div>
+      <div class="days-grid">
+        <div class="day-card theory" data-algo=""><div class="day-top"><span class="dnum">Day 1</span><span class="dtype t">Theory</span></div><h3>What is Machine Learning?</h3><ul><li>How machines learn</li><li>Supervised vs Unsupervised</li><li>Types of ML problems</li><li>Real-world examples</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Understand the fundamental difference between rule-based programming and statistical learning. Explore how models generalise from data.</p><div class="tools-row"><span class="tool-tag">Slides</span><span class="tool-tag">Case Studies</span><span class="tool-tag">Q&A</span></div></div></div></div>
+        <div class="day-card practical"><div class="day-top"><span class="dnum">Day 2</span><span class="dtype p">Practical</span></div><h3>Python & Data Tools</h3><ul><li>NumPy arrays & ops</li><li>Pandas DataFrames</li><li>Matplotlib charts</li><li>ML-focused exercises</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Hands-on coding session covering the core Python data stack every ML engineer uses daily.</p><div class="tools-row"><span class="tool-tag">NumPy</span><span class="tool-tag">Pandas</span><span class="tool-tag">Matplotlib</span><span class="tool-tag">Jupyter</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 3</span><span class="dtype t">Theory</span></div><h3>Math Intuition for ML</h3><ul><li>Gradients (visual)</li><li>Cost functions</li><li>Probability basics</li><li>No heavy calculus</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Build geometric intuition for why <span class="algo-link" onclick="showAlgo('gradient_descent')">Gradient Descent</span> works, without needing a maths degree.</p><div class="tools-row"><span class="tool-tag">Visual aids</span><span class="tool-tag">Desmos</span></div></div></div></div>
+        <div class="day-card practical"><div class="day-top"><span class="dnum">Day 4</span><span class="dtype p">Practical</span></div><h3>Data Preprocessing Pipeline</h3><ul><li>Handling missing values</li><li>Encoding categories</li><li>Feature scaling</li><li>Train / Test split</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Build a reusable preprocessing pipeline from scratch — the skill that separates good ML engineers from great ones.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Pandas</span><span class="tool-tag">Pipeline API</span></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="phase-block" data-phase="2">
+      <div class="phase-hdr" style="--c:#47c8ff"><span class="plabel">Phase 02</span><span class="ptitle">Regression & Classification</span><span class="prange">Days 5–10</span></div>
+      <div class="days-grid">
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 5</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('linear_regression')">Linear Regression</span></h3><ul><li>Line fitting intuition</li><li>MSE loss function</li><li>Gradient descent</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>The foundation of all ML. Understand how we fit a line to data by minimising the sum of squared errors.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">NumPy</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 6</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('logistic_regression')">Logistic Regression</span></h3><ul><li>Sigmoid function</li><li>Binary classification</li><li>Probability output</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Despite its name, logistic regression is a classification algorithm. Learn how the sigmoid squashes outputs to probabilities.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span></div></div></div></div>
+        <div class="day-card project"><div class="day-top"><span class="dnum">Day 7</span><span class="dtype pr">Project</span></div><h3>🎯 Student Score Predictor</h3><p class="proj-desc">Study hours, sleep & attendance → score / pass-fail</p><ul><li>Linear & Logistic Regression</li><li>Coefficient interpretation</li><li>Decision boundary viz</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Your first end-to-end ML project. Build, evaluate, and visualise two models on a real student dataset.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span><span class="tool-tag">Pandas</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 8</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('knn')">KNN Algorithm</span></h3><ul><li>Distance metrics</li><li>Choosing optimal K</li><li>Strengths & weaknesses</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>The simplest yet most intuitive classifier — classify a point by looking at its K nearest neighbours.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Seaborn</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 9</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('naive_bayes')">Naive Bayes</span></h3><ul><li>Probability-based</li><li>Spam filtering intuition</li><li>Real applications</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Apply Bayes' theorem to classify text and more. Surprisingly powerful despite its "naive" independence assumption.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">NLTK</span></div></div></div></div>
+        <div class="day-card review"><div class="day-top"><span class="dnum">Day 10</span><span class="dtype rv">Review</span></div><h3>Phase Review & Quiz</h3><ul><li>Algorithm recap</li><li>Q & A session</li><li>Knowledge quiz</li></ul></div>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="phase-block" data-phase="3">
+      <div class="phase-hdr" style="--c:#ff6b6b"><span class="plabel">Phase 03</span><span class="ptitle">Trees & Ensembles</span><span class="prange">Days 11–16</span></div>
+      <div class="days-grid">
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 11</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('decision_tree')">Decision Trees</span></h3><ul><li>Gini vs Entropy</li><li>Tree depth control</li><li>Overfitting (visual)</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>A highly interpretable model that splits data recursively. Great for understanding feature importance and decision logic.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Graphviz</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 12</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('random_forest')">Random Forest</span></h3><ul><li>Bagging strategy</li><li>Feature importance</li><li>Why forests beat trees</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>An ensemble of decision trees that reduces variance via bagging. One of the most reliable algorithms in practice.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span></div></div></div></div>
+        <div class="day-card project"><div class="day-top"><span class="dnum">Day 13</span><span class="dtype pr">Project</span></div><h3>🏥 Disease Risk Classifier</h3><p class="proj-desc">Pima Indians Diabetes — age, BMI, glucose → risk</p><ul><li>Decision Tree vs Random Forest</li><li>Accuracy comparison</li><li>Feature importance plot</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Apply tree-based models to a real medical dataset. Learn to tune max_depth and n_estimators for better performance.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Seaborn</span><span class="tool-tag">Pandas</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 14</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('svm')">Support Vector Machine</span></h3><ul><li>Hyperplane concept</li><li>Maximizing margin</li><li>Kernel trick</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>SVMs find the optimal boundary between classes by maximising the margin. The kernel trick allows nonlinear separation.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span></div></div></div></div>
+        <div class="day-card practical"><div class="day-top"><span class="dnum">Day 15</span><span class="dtype p">Practical</span></div><h3>Model Evaluation</h3><ul><li>Confusion Matrix</li><li>Precision / Recall / F1</li><li>ROC-AUC curve</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Accuracy alone is misleading. Learn to read and interpret all major evaluation metrics for classification tasks.</p><div class="tools-row"><span class="tool-tag">Sklearn metrics</span><span class="tool-tag">Seaborn</span></div></div></div></div>
+        <div class="day-card project"><div class="day-top"><span class="dnum">Day 16</span><span class="dtype pr">Project</span></div><h3>🎬 Movie Genre Classifier</h3><p class="proj-desc">MovieLens — runtime, rating, votes → genre</p><ul><li>KNN vs SVM vs Naive Bayes</li><li>Model comparison</li><li>Tune K and C params</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>A multi-class classification challenge. Compare three different algorithms and pick the best one for this dataset.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Pandas</span><span class="tool-tag">GridSearchCV</span></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="phase-block" data-phase="4">
+      <div class="phase-hdr" style="--c:#b47fff"><span class="plabel">Phase 04</span><span class="ptitle">Unsupervised & Advanced</span><span class="prange">Days 17–21</span></div>
+      <div class="days-grid">
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 17</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('kmeans')">K-Means Clustering</span></h3><ul><li>Centroid algorithm</li><li>Elbow method</li><li>Real-world use cases</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Unsupervised learning — group data without labels. K-Means iteratively refines cluster centroids until convergence.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 18</span><span class="dtype t">Theory</span></div><h3><span class="algo-link" onclick="showAlgo('pca')">PCA — Dimensionality Reduction</span></h3><ul><li>High-dimensional data</li><li>Variance preservation</li><li>2D visualization</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Compress high-dimensional datasets into 2D or 3D while preserving maximum variance — essential for visualization and speed.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Matplotlib</span></div></div></div></div>
+        <div class="day-card project"><div class="day-top"><span class="dnum">Day 19</span><span class="dtype pr">Project</span></div><h3>🛍️ Customer Segmentation</h3><p class="proj-desc">Mall Customers — age, income, spending score</p><ul><li>K-Means + PCA pipeline</li><li>Find & visualise clusters</li><li>Label customer types</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>A classic business problem. Segment customers into groups to enable targeted marketing and personalised experiences.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Seaborn</span><span class="tool-tag">Pandas</span></div></div></div></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Days 20–21</span><span class="dtype t">Theory</span></div><h3>Bias, Overfitting & Regularization</h3><ul><li>L1 / L2 Regularization</li><li>Cross-validation</li><li>Hyperparameter tuning</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>Learn to diagnose and fix the most common ML problems. Master bias-variance tradeoff, cross-validation, and tuning strategies.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">GridSearchCV</span><span class="tool-tag">KFold</span></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="phase-block" data-phase="5">
+      <div class="phase-hdr" style="--c:#ff9f47"><span class="plabel">Phase 05</span><span class="ptitle">Capstone</span><span class="prange">Days 22–25</span></div>
+      <div class="days-grid">
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 22</span><span class="dtype t">Theory</span></div><h3>Algorithm Selection Guide</h3><ul><li>Choosing the right model</li><li>Decision framework</li><li>Trade-offs & use cases</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>A practical decision flowchart — given a dataset, how do you choose between Linear Regression, SVM, Random Forest, or K-Means?</p><div class="tools-row"><span class="tool-tag">Framework</span><span class="tool-tag">Cheatsheet</span></div></div></div></div>
+        <div class="day-card project capstone-card"><div class="day-top"><span class="dnum">Day 23</span><span class="dtype pr">Capstone</span></div><h3>🏠 House Price Predictor</h3><p class="proj-desc">Boston Housing / Kaggle — area, rooms, location → price</p><ul><li>Full end-to-end pipeline</li><li>Compare 3 models</li><li>Justify your choices</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>The ultimate test. Apply everything you've learned — preprocessing, model selection, evaluation, and storytelling — on a real Kaggle dataset.</p><div class="tools-row"><span class="tool-tag">Sklearn</span><span class="tool-tag">Pandas</span><span class="tool-tag">Matplotlib</span><span class="tool-tag">Kaggle</span></div></div></div></div>
+        <div class="day-card review"><div class="day-top"><span class="dnum">Day 24</span><span class="dtype rv">Presentations</span></div><h3>Student Presentations</h3><ul><li>What worked & why</li><li>Challenges faced</li><li>Lessons learned</li></ul></div>
+        <div class="day-card theory"><div class="day-top"><span class="dnum">Day 25</span><span class="dtype t">Theory</span></div><h3>What's Next in ML?</h3><ul><li>Intro to Deep Learning</li><li>Career paths in AI</li><li>Learning resources</li></ul><button class="expand-btn" onclick="toggleExpand(this)">▾ More details</button><div class="expand-content"><div class="expand-inner"><p>A curated roadmap for what comes after this course — neural networks, transformers, MLOps, and how to break into the industry.</p><div class="tools-row"><span class="tool-tag">TensorFlow</span><span class="tool-tag">PyTorch</span><span class="tool-tag">HuggingFace</span></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <h2 class="sec-title">What You'll Gain</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card"><div class="bicon">⚡</div><h3>Hands-on Projects</h3><p>5 real-world ML projects ready for your GitHub and resume portfolio.</p></div>
+      <div class="benefit-card"><div class="bicon">🧠</div><h3>Core ML Mastery</h3><p>Strong foundation across 10+ algorithms — regression to ensembles to unsupervised learning.</p></div>
+      <div class="benefit-card"><div class="bicon">🛠️</div><h3>Industry Toolchain</h3><p>Daily practice with NumPy, Pandas, Matplotlib, and Scikit-learn workflows.</p></div>
+      <div class="benefit-card"><div class="bicon">🏆</div><h3>Kaggle Ready</h3><p>Confidence to enter ML competitions and tackle real-world data challenges independently.</p></div>
+      <div class="benefit-card"><div class="bicon">🎯</div><h3>End-to-End Thinking</h3><p>Build complete pipelines from raw data through preprocessing, modeling, and evaluation.</p></div>
+      <div class="benefit-card"><div class="bicon">🚀</div><h3>Deep Learning Bridge</h3><p>A strong base to transition into neural networks, deep learning, and modern AI systems.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section class="certs">
+  <div class="container">
+    <h2 class="sec-title">Recognition & Certifications</h2>
+    <div class="certs-row">
+      <div class="cert-item"><div class="cicon">📜</div><h3>Completion Certificate</h3><p>Official certificate for all successful participants.</p></div>
+      <div class="cert-item"><div class="cicon">✉️</div><h3>Letter of Recommendation</h3><p>Top performers earn an LOR based on project quality and consistency.</p></div>
+      <div class="cert-item"><div class="cicon">🥇</div><h3>Top Performer Award</h3><p>Performance-based recognition for the best projects and learners.</p></div>
+      <div class="cert-item"><div class="cicon">💼</div><h3>Internship Opportunity</h3><p>Selected participants considered for internship or project collaborations.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="fbrand">ML Roadmap</div>
+    <div class="ftag-line">25 Days · 5 Projects · One Complete Journey</div>
+  </div>
+</footer>
+
+<!-- TRACKER TOGGLE -->
+<button class="tracker-toggle" onclick="toggleTracker()">
+  📅 Progress <span class="tracker-badge" id="tracker-count">0/25</span>
+</button>
+
+<!-- TRACKER PANEL -->
+<div class="tracker-panel" id="tracker-panel">
+  <div class="tracker-head">
+    <h2>Your Progress</h2>
+    <button class="close-btn" onclick="toggleTracker()">✕</button>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill"></div></div>
+  <div class="progress-text" id="prog-text">0 of 25 days completed</div>
+  <div id="tracker-list"></div>
+</div>
+
+<!-- ALGO MODAL -->
+<div id="algo-modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title"></h2>
+    <div class="modal-tag" id="modal-tag"></div>
+    <p id="modal-desc"></p>
+    <div class="modal-use" id="modal-use"></div>
+  </div>
+</div>
+
+<script>
+// ===== CURSOR =====
+const cur = document.getElementById('cursor');
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+
+// ===== PARTICLES =====
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, pts = [];
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+for (let i = 0; i < 80; i++) pts.push({ x: Math.random()*2000, y: Math.random()*1200, vx: (Math.random()-.5)*.3, vy: (Math.random()-.5)*.3, r: Math.random()*1.5+.5 });
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(232,255,71,0.25)'; ctx.fill();
+  });
+  pts.forEach((a, i) => pts.slice(i+1).forEach(b => {
+    const d = Math.hypot(a.x-b.x, a.y-b.y);
+    if (d < 120) { ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle = `rgba(71,200,255,${0.06*(1-d/120)})`; ctx.lineWidth=.5; ctx.stroke(); }
+  }));
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ===== COUNTERS =====
+function animCount(el, target) {
+  let n = 0; const step = Math.ceil(target / 40);
+  const t = setInterval(() => { n = Math.min(n + step, target); el.textContent = n + (target === 10 ? '+' : ''); if (n >= target) clearInterval(t); }, 40);
+}
+const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { document.querySelectorAll('[data-count]').forEach(el => animCount(el, +el.dataset.count)); obs.disconnect(); }}); }, { threshold: 0.5 });
+obs.observe(document.querySelector('.hero-stats'));
+
+// ===== SCROLL REVEAL =====
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('reveal'), i * 80); revObs.unobserve(e.target); }});
+}, { threshold: 0.1 });
+document.querySelectorAll('.day-card').forEach(c => revObs.observe(c));
+
+// ===== 3D TILT =====
+document.querySelectorAll('.day-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `perspective(600px) rotateY(${x*10}deg) rotateX(${-y*10}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', () => card.style.transform = '');
+});
+
+// ===== PHASE FILTER =====
+function filterPhase(p) {
+  document.querySelectorAll('.phase-block').forEach(b => b.classList.toggle('hidden', p !== 'all' && +b.dataset.phase !== p));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('roadmap').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== EXPAND =====
+function toggleExpand(btn) {
+  const ec = btn.nextElementSibling;
+  const open = ec.classList.toggle('open');
+  btn.textContent = open ? '▴ Less details' : '▾ More details';
+}
+
+// ===== TRACKER DATA =====
+const DAYS = [
+  {phase:'Phase 1 — Foundations',days:[{d:1,t:'What is Machine Learning?'},{d:2,t:'Python & Data Tools'},{d:3,t:'Math Intuition for ML'},{d:4,t:'Data Preprocessing Pipeline'}]},
+  {phase:'Phase 2 — Regression & Classification',days:[{d:5,t:'Linear Regression'},{d:6,t:'Logistic Regression'},{d:7,t:'Project: Student Score Predictor'},{d:8,t:'KNN Algorithm'},{d:9,t:'Naive Bayes'},{d:10,t:'Phase Review & Quiz'}]},
+  {phase:'Phase 3 — Trees & Ensembles',days:[{d:11,t:'Decision Trees'},{d:12,t:'Random Forest'},{d:13,t:'Project: Disease Risk Classifier'},{d:14,t:'SVM'},{d:15,t:'Model Evaluation'},{d:16,t:'Project: Movie Genre Classifier'}]},
+  {phase:'Phase 4 — Unsupervised & Advanced',days:[{d:17,t:'K-Means Clustering'},{d:18,t:'PCA'},{d:19,t:'Project: Customer Segmentation'},{d:20,t:'Bias & Regularization'},{d:21,t:'Cross-validation & Tuning'}]},
+  {phase:'Phase 5 — Capstone',days:[{d:22,t:'Algorithm Selection Guide'},{d:23,t:'Capstone: House Price Predictor'},{d:24,t:'Student Presentations'},{d:25,t:"What's Next in ML?"}]}
+];
+
+let checked = JSON.parse(localStorage.getItem('ml_progress') || '{}');
+
+function buildTracker() {
+  const list = document.getElementById('tracker-list');
+  list.innerHTML = '';
+  DAYS.forEach(ph => {
+    const lbl = document.createElement('div'); lbl.className = 'tracker-phase-label'; lbl.textContent = ph.phase; list.appendChild(lbl);
+    ph.days.forEach(day => {
+      const row = document.createElement('label'); row.className = 'day-check' + (checked[day.d] ? ' done' : '');
+      row.innerHTML = `<input type="checkbox" ${checked[day.d]?'checked':''}><div class="check-box">${checked[day.d]?'✓':''}</div><span class="check-label">Day ${day.d} — ${day.t}</span>`;
+      row.querySelector('input').addEventListener('change', e => { checked[day.d] = e.target.checked; localStorage.setItem('ml_progress', JSON.stringify(checked)); buildTracker(); updateProgress(); if(e.target.checked) maybeConfetti(); });
+      list.appendChild(row);
+    });
+  });
+}
+
+function updateProgress() {
+  const done = Object.values(checked).filter(Boolean).length;
+  const pct = (done/25*100).toFixed(0);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `${done} of 25 days completed`;
+  document.getElementById('tracker-count').textContent = `${done}/25`;
+}
+
+function toggleTracker() {
+  document.getElementById('tracker-panel').classList.toggle('open');
+}
+
+function maybeConfetti() {
+  if (Object.values(checked).filter(Boolean).length === 25) spawnConfetti();
+}
+
+function spawnConfetti() {
+  const colors = ['#e8ff47','#47c8ff','#ff6b6b','#b47fff','#ff9f47','#4fffb0'];
+  for (let i = 0; i < 120; i++) {
+    const el = document.createElement('div'); el.className = 'confetti-piece';
+    el.style.cssText = `left:${Math.random()*100}vw;top:-10px;background:${colors[~~(Math.random()*colors.length)]};animation-delay:${Math.random()*1.5}s;animation-duration:${2+Math.random()*1.5}s;transform:rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+buildTracker(); updateProgress();
+
+// ===== ALGO MODAL =====
+const ALGOS = {
+  linear_regression:{title:'Linear Regression',tag:'Supervised · Regression',desc:'Fits a straight line (or hyperplane) to data by minimising the Mean Squared Error. The most fundamental ML algorithm — every other regression method builds on this intuition.',use:'📌 Used in: Day 5, Day 7 (Student Score Predictor), Day 23 (Capstone)'},
+  logistic_regression:{title:'Logistic Regression',tag:'Supervised · Classification',desc:'Despite its name, it\'s a classifier. Uses the sigmoid function to squash a linear combination of features into a probability between 0 and 1, then applies a threshold.',use:'📌 Used in: Day 6, Day 7 (Student Score Predictor)'},
+  knn:{title:'K-Nearest Neighbors',tag:'Supervised · Classification & Regression',desc:'Classifies a point by a majority vote among its K closest training examples. Intuitive and non-parametric — but slow on large datasets and sensitive to feature scaling.',use:'📌 Used in: Day 8, Day 16 (Movie Genre Classifier)'},
+  naive_bayes:{title:'Naive Bayes',tag:'Supervised · Classification',desc:'Applies Bayes\' theorem assuming all features are independent (the "naive" part). Extremely fast and surprisingly effective for text classification and spam filtering.',use:'📌 Used in: Day 9, Day 16 (Movie Genre Classifier)'},
+  decision_tree:{title:'Decision Tree',tag:'Supervised · Classification & Regression',desc:'Recursively splits data by the feature that best separates classes, using Gini impurity or Information Gain. Highly interpretable but prone to overfitting without pruning.',use:'📌 Used in: Day 11, Day 13 (Disease Risk Classifier)'},
+  random_forest:{title:'Random Forest',tag:'Supervised · Ensemble',desc:'An ensemble of decision trees trained on random subsets of data and features (bagging). Reduces variance dramatically and provides robust feature importance scores.',use:'📌 Used in: Day 12, Day 13 (Disease Risk Classifier)'},
+  svm:{title:'Support Vector Machine',tag:'Supervised · Classification',desc:'Finds the hyperplane that maximises the margin between classes. The kernel trick (RBF, polynomial) allows SVMs to handle non-linearly separable data effectively.',use:'📌 Used in: Day 14, Day 16 (Movie Genre Classifier)'},
+  kmeans:{title:'K-Means Clustering',tag:'Unsupervised · Clustering',desc:'Partitions data into K clusters by iteratively assigning points to their nearest centroid and updating centroids. The Elbow Method helps choose the optimal K.',use:'📌 Used in: Day 17, Day 19 (Customer Segmentation)'},
+  pca:{title:'Principal Component Analysis',tag:'Unsupervised · Dimensionality Reduction',desc:'Projects high-dimensional data onto orthogonal axes (principal components) that capture maximum variance. Essential for visualisation and speeding up downstream ML models.',use:'📌 Used in: Day 18, Day 19 (Customer Segmentation)'},
+  gradient_descent:{title:'Gradient Descent',tag:'Optimisation Algorithm',desc:'An iterative algorithm that minimises a loss function by taking small steps in the direction of the negative gradient. The backbone of nearly all ML and deep learning training.',use:'📌 Used in: Day 3 (Math Intuition), Day 5 (Linear Regression)'},
+};
+
+function showAlgo(key) {
+  const a = ALGOS[key]; if(!a) return;
+  document.getElementById('modal-title').textContent = a.title;
+  document.getElementById('modal-tag').textContent = a.tag;
+  document.getElementById('modal-desc').textContent = a.desc;
+  document.getElementById('modal-use').textContent = a.use;
+  document.getElementById('algo-modal').classList.add('open');
+}
+function closeModal() { document.getElementById('algo-modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ===== ACTIVE NAV =====
+const sections = ['home','roadmap','benefits'];
+window.addEventListener('scroll', () => {
+  sections.forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    const r = el.getBoundingClientRect();
+    if(r.top <= 100 && r.bottom >= 100) document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.getAttribute('href')==='#'+id));
+  });
+});
+</script>
+</body>
+</html>
